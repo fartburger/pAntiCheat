@@ -79,7 +79,8 @@ public class PlayerMoveListener implements Listener {
         }
     }
     public boolean inAir(World w,Location l) {
-        if(w.getBlockAt(l.getBlockX(),l.getBlockY()-3,l.getBlockZ()).getType()==Material.AIR) {
+        if(w.getBlockAt(l.getBlockX(),l.getBlockY()-3,l.getBlockZ()).getType()==Material.AIR&&
+        w.getBlockAt(l.getBlockX(),l.getBlockY()-1,l.getBlockZ()).getType()!=Material.AIR) {
             return true;
         } else {
             return false;
