@@ -61,7 +61,7 @@ public class PlayerMoveListener implements Listener {
         if(player.getGameMode()==GameMode.SURVIVAL&&!player.isOp()) {
             if((player.getActivePotionEffects().size()==0||player.getActivePotionEffects()==null)&&
                     !onIce(player.getWorld(),player.getLocation())&&!player.isInsideVehicle()&&!inAir(player.getWorld(),player.getLocation())
-                    &&timenotgliding>=70&&timenotjumping>=3) {
+                    &&timenotgliding>=70&&timenotjumping>=8) {
                 if (xVel > 7 || zVel > 7 && yVel == 0) {
                     player.kick(Component.text(ChatColor.GREEN + "Detected Speed. Speed limit on foot is 7 blocks per second."));
                     Bukkit.broadcast(Component.text(ChatColor.GREEN+player.getName()+" was kicked for speeding."));
@@ -69,8 +69,8 @@ public class PlayerMoveListener implements Listener {
             }
 
             if(player.isInsideVehicle()) {
-                entervehicledelay = entervehicledelay<5 ? clamp(0,5,entervehicledelay+1) : 5;
-                if(!onIce(player.getWorld(),player.getLocation())&&officetime>=70&&entervehicledelay>=5) {
+                entervehicledelay = entervehicledelay<10 ? clamp(0,10,entervehicledelay+1) : 10;
+                if(!onIce(player.getWorld(),player.getLocation())&&officetime>=70&&entervehicledelay>=10) {
                     if(xVel>9||zVel>9) {
                         player.kick(Component.text(ChatColor.GREEN+"Detected Vehicle Speed. Speed limit in boats off ice is 9 blocks per second."));
                         Bukkit.broadcast(Component.text(ChatColor.GREEN+player.getName()+" was kicked for speeding in a vehicle."));
@@ -82,6 +82,8 @@ public class PlayerMoveListener implements Listener {
                         Bukkit.broadcast(Component.text(ChatColor.GREEN+player.getName()+" was kicked for speeding in a vehicle."));
                     }
                 }
+            } else {
+                entervehicledelay=0;
             }
 
             if(inAir(player.getWorld(),player.getLocation())&&player.getPlayerTime()>6500&&!player.isGliding()) {
