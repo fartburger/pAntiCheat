@@ -1,4 +1,8 @@
 # pAntiCheat
+
+### A simple anticheat plugin made for a lan server.
+### Requires [Paper](https://papermc.io/downloads)
+
 ## Current Features:
 * Speed Detection (both in vehicle and out)
 * Flight Detection
