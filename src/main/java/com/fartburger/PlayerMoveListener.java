@@ -70,16 +70,18 @@ public class PlayerMoveListener implements Listener {
 
             if(player.isInsideVehicle()) {
                 entervehicledelay = entervehicledelay<10 ? clamp(0,10,entervehicledelay+1) : 10;
-                if(!onIce(player.getWorld(),player.getLocation())&&officetime>=70&&entervehicledelay>=10) {
-                    if(xVel>9||zVel>9) {
-                        player.kick(Component.text(ChatColor.GREEN+"Detected Vehicle Speed. Speed limit in boats off ice is 9 blocks per second."));
-                        Bukkit.broadcast(Component.text(ChatColor.GREEN+player.getName()+" was kicked for speeding in a vehicle."));
-                        officetime=0;
-                    }
-                } else {
-                    if(xVel>40||zVel>40&&entervehicledelay>=10) {
-                        player.kick(Component.text(ChatColor.GREEN+"Detected Vehicle Speed. Speed limit in boats on ice is 40 blocks per second."));
-                        Bukkit.broadcast(Component.text(ChatColor.GREEN+player.getName()+" was kicked for speeding in a vehicle."));
+                if(entervehicledelay>=10) {
+                    if (!onIce(player.getWorld(), player.getLocation()) && officetime >= 70) {
+                        if (xVel > 9 || zVel > 9) {
+                            player.kick(Component.text(ChatColor.GREEN + "Detected Vehicle Speed. Speed limit in boats off ice is 9 blocks per second."));
+                            Bukkit.broadcast(Component.text(ChatColor.GREEN + player.getName() + " was kicked for speeding in a vehicle."));
+                            officetime = 0;
+                        }
+                    } else {
+                        if (xVel > 40 || zVel > 40) {
+                            player.kick(Component.text(ChatColor.GREEN + "Detected Vehicle Speed. Speed limit in boats on ice is 40 blocks per second."));
+                            Bukkit.broadcast(Component.text(ChatColor.GREEN + player.getName() + " was kicked for speeding in a vehicle."));
+                        }
                     }
                 }
             } else {
