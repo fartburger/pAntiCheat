@@ -21,6 +21,7 @@ import static org.bukkit.Bukkit.getServer;
 public class PlayerMoveListener implements Listener {
 
     static List<Material> iceblocks = Arrays.asList(Material.ICE,Material.PACKED_ICE,Material.BLUE_ICE,Material.FROSTED_ICE);
+    static List<Material> cancelfallblocks = Arrays.asList(Material.WATER,Material.LAVA,Material.COBWEB);
     static int a = 0;
     static int officetime = 0;
     static int timenotgliding = 0;
@@ -28,12 +29,29 @@ public class PlayerMoveListener implements Listener {
     static int botmotionticks = 0;
     static int entervehicledelay = 0;
 
+    static double lxVel=0;
+    static double lyVel=0;
+    static double lzVel=0;
+
+    static int fallenBlocks=0;
+
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent e) {
         Player player = e.getPlayer();
         double xVel = (e.getTo().getX()-e.getFrom().getX())/.05;
         double yVel = (e.getTo().getY()-e.getFrom().getY())/.05;
         double zVel = (e.getTo().getZ()-e.getFrom().getZ())/.05;
+
+        // work in progress
+        /*
+        if(e.getTo().getBlockY()<e.getFrom().getBlockY()) {
+            fallenBlocks++;
+        } else {
+            int damageTaken = fallenBlocks>3 ? fallenBlocks-3 : 0;
+
+            fallenBlocks=0;
+        }
+         */
 
         // for testing purposes only
         //player.sendMessage(Component.text("xvel ["+Math.round(xVel)+"] yvel ["+Math.round(yVel)+"] zvel ["+Math.round(zVel)+"]"));
@@ -100,6 +118,10 @@ public class PlayerMoveListener implements Listener {
                 }
             }
         }
+
+        lxVel = (e.getTo().getX()-e.getFrom().getX())/.05;
+        lyVel = (e.getTo().getY()-e.getFrom().getY())/.05;
+        lzVel = (e.getTo().getZ()-e.getFrom().getZ())/.05;
     }
 
     public boolean onIce(World w, Location l) {

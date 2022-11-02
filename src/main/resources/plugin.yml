@@ -2,3 +2,8 @@ name: gAntiCheat
 version: '${version}'
 main: com.fartburger.main
 api-version: 1.19
+commands:
+  hello:
+    description: says hi back
+    usage: /hello
+

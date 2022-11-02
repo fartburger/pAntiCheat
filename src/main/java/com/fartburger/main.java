@@ -1,12 +1,5 @@
 package com.fartburger;
 
-import net.kyori.adventure.text.Component;
-import org.bukkit.Color;
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class main extends JavaPlugin {
@@ -16,6 +9,9 @@ public final class main extends JavaPlugin {
         getLogger().info("Anti cheat online.");
         getServer().getPluginManager().registerEvents(new PlayerMoveListener(),this);
         getServer().getPluginManager().registerEvents(new PlayerMineListener(),this);
+        this.getCommand("hello").setExecutor(new HelloCommand());
+
+
     }
 
     @Override
