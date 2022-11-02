@@ -16,12 +16,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import static org.bukkit.Bukkit.getLogger;
 import static org.bukkit.Bukkit.getServer;
 
 public class PlayerMoveListener implements Listener {
 
     static List<Material> iceblocks = Arrays.asList(Material.ICE,Material.PACKED_ICE,Material.BLUE_ICE,Material.FROSTED_ICE);
-    static List<Material> cancelfallblocks = Arrays.asList(Material.WATER,Material.LAVA,Material.COBWEB);
     static int a = 0;
     static int officetime = 0;
     static int timenotgliding = 0;
@@ -33,7 +33,6 @@ public class PlayerMoveListener implements Listener {
     static double lyVel=0;
     static double lzVel=0;
 
-    static int fallenBlocks=0;
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent e) {
@@ -41,17 +40,6 @@ public class PlayerMoveListener implements Listener {
         double xVel = (e.getTo().getX()-e.getFrom().getX())/.05;
         double yVel = (e.getTo().getY()-e.getFrom().getY())/.05;
         double zVel = (e.getTo().getZ()-e.getFrom().getZ())/.05;
-
-        // work in progress
-        /*
-        if(e.getTo().getBlockY()<e.getFrom().getBlockY()) {
-            fallenBlocks++;
-        } else {
-            int damageTaken = fallenBlocks>3 ? fallenBlocks-3 : 0;
-
-            fallenBlocks=0;
-        }
-         */
 
         // for testing purposes only
         //player.sendMessage(Component.text("xvel ["+Math.round(xVel)+"] yvel ["+Math.round(yVel)+"] zvel ["+Math.round(zVel)+"]"));
@@ -64,8 +52,15 @@ public class PlayerMoveListener implements Listener {
                     Math.abs(e.getTo().getX()-e.getFrom().getX())!=0&&Math.abs(e.getTo().getZ()-e.getFrom().getZ())!=0) ? clamp(0,40,botmotionticks+1) : 0;
 
             if(botmotionticks>=30) {
-                player.kick(Component.text(ChatColor.GREEN+"Detected Baritone."));
-                Bukkit.broadcast(Component.text(ChatColor.GREEN+player.getName()+" was kicked for using baritone."));
+                //player.kick(Component.text(ChatColor.GREEN+"Detected Baritone."));
+                //Bukkit.broadcast(Component.text(ChatColor.GREEN+player.getName()+" was kicked for using baritone."));
+                getServer().getOnlinePlayers().forEach(ply -> {
+                   if(ply.isOp()) {
+                       ply.sendMessage(Component.text(ChatColor.GREEN+player.getName()+" has triggered baritone detection."));
+                   }
+                });
+                getLogger().info(player.getName()+" has triggered baritone detection at ["+player.getLocation().getBlockX()+","+
+                        player.getLocation().getBlockY() +","+player.getLocation().getBlockZ()+"]");
                 botmotionticks=0;
             }
         }
@@ -77,9 +72,7 @@ public class PlayerMoveListener implements Listener {
         officetime = onIce(player.getWorld(),player.getLocation()) ? 0 : clamp(0,70,officetime+1);
         entervehicledelay = player.isInsideVehicle() ? 0 : clamp(0,10,entervehicledelay+1);
         if(player.getGameMode()==GameMode.SURVIVAL&&!player.isOp()) {
-            if((player.getActivePotionEffects().size()==0||player.getActivePotionEffects()==null)&&
-                    !onIce(player.getWorld(),player.getLocation())&&!player.isInsideVehicle()&&!inAir(player.getWorld(),player.getLocation())
-                    &&timenotgliding>=70&&timenotjumping>=8) {
+            if(player.getActivePotionEffects().size() == 0 && !onIce(player.getWorld(), player.getLocation()) && !player.isInsideVehicle() && !inAir(player.getWorld(), player.getLocation(), yVel) && timenotgliding >= 70 && timenotjumping >= 8) {
                 if (xVel > 7 || zVel > 7 && yVel == 0) {
                     player.kick(Component.text(ChatColor.GREEN + "Detected Speed. Speed limit on foot is 7 blocks per second."));
                     Bukkit.broadcast(Component.text(ChatColor.GREEN+player.getName()+" was kicked for speeding."));
@@ -105,7 +98,7 @@ public class PlayerMoveListener implements Listener {
                 entervehicledelay=0;
             }
 
-            if(inAir(player.getWorld(),player.getLocation())&&player.getPlayerTime()>6500&&!player.isGliding()) {
+            if(inAir(player.getWorld(),player.getLocation(),yVel)&&player.getPlayerTime()>6500&&!player.isGliding()) {
                 if(yVel>=-2) {
                     a++;
                 } else {
@@ -136,20 +129,22 @@ public class PlayerMoveListener implements Listener {
         }
         return false;
     }
-    public boolean inAir(World w,Location l) {
-
-            for(int x=-1;x<=1;x++) {
-                for(int z=-1;z<=1;z++) {
-                    if(w.getBlockAt(l.getBlockX()+x,l.getBlockY()-1,l.getBlockZ()+z).getType()!=Material.AIR) {
+    public boolean inAir(World w,Location l,double yvel) {
+        if(Math.abs(yvel)<0.4) {
+            for (int x = -1; x <= 1; x++) {
+                for (int z = -1; z <= 1; z++) {
+                    if (w.getBlockAt(l.getBlockX() + x, l.getBlockY() - 1, l.getBlockZ() + z).getType() != Material.AIR) {
                         return false;
                     }
                 }
             }
-            if(w.getBlockAt(l.getBlockX(),l.getBlockY()-3,l.getBlockZ()).getType()==Material.AIR) {
-                return true;
-            } else {
-                return false;
-            }
+        }
+        if(w.getBlockAt(l.getBlockX(),l.getBlockY()-3,l.getBlockZ()).getType()==Material.AIR) {
+            return true;
+        } else {
+            return false;
+        }
+
     }
 
     public int clamp(int min,int max,int val) {
