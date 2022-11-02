@@ -110,15 +110,19 @@ public class PlayerMoveListener implements Listener {
         return false;
     }
     public boolean inAir(World w,Location l) {
+
             for(int x=-1;x<=1;x++) {
                 for(int z=-1;z<=1;z++) {
-                    if(w.getBlockAt(l.getBlockX()+x,l.getBlockY()-3,l.getBlockZ()+z).getType()==Material.AIR&&
-                            w.getBlockAt(l.getBlockX()+x,l.getBlockY()-1,l.getBlockZ()+z).getType()==Material.AIR) {
-                        return true;
+                    if(w.getBlockAt(l.getBlockX()+x,l.getBlockY()-1,l.getBlockZ()+z).getType()!=Material.AIR) {
+                        return false;
                     }
                 }
             }
-            return false;
+            if(w.getBlockAt(l.getBlockX(),l.getBlockY()-3,l.getBlockZ()).getType()==Material.AIR) {
+                return true;
+            } else {
+                return false;
+            }
     }
 
     public int clamp(int min,int max,int val) {
