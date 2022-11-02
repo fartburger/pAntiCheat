@@ -77,7 +77,7 @@ public class PlayerMoveListener implements Listener {
                         officetime=0;
                     }
                 } else {
-                    if(xVel>40||zVel>40) {
+                    if(xVel>40||zVel>40&&entervehicledelay>=10) {
                         player.kick(Component.text(ChatColor.GREEN+"Detected Vehicle Speed. Speed limit in boats on ice is 40 blocks per second."));
                         Bukkit.broadcast(Component.text(ChatColor.GREEN+player.getName()+" was kicked for speeding in a vehicle."));
                     }
