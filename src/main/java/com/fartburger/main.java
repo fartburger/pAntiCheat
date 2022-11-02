@@ -15,11 +15,12 @@ public final class main extends JavaPlugin {
     public void onEnable() {
         getLogger().info("Anti cheat online.");
         getServer().getPluginManager().registerEvents(new PlayerMoveListener(),this);
+        getServer().getPluginManager().registerEvents(new PlayerMineListener(),this);
     }
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
+        getLogger().info("Anti cheat offline.");
     }
 
 
