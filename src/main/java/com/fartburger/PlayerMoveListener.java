@@ -26,6 +26,7 @@ public class PlayerMoveListener implements Listener {
     static int timenotgliding = 0;
     static int timenotjumping = 0;
     static int botmotionticks = 0;
+    static int entervehicledelay = 0;
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent e) {
@@ -68,7 +69,8 @@ public class PlayerMoveListener implements Listener {
             }
 
             if(player.isInsideVehicle()) {
-                if(!onIce(player.getWorld(),player.getLocation())&&officetime>=70) {
+                entervehicledelay = entervehicledelay<5 ? clamp(0,5,entervehicledelay+1) : 5;
+                if(!onIce(player.getWorld(),player.getLocation())&&officetime>=70&&entervehicledelay>=5) {
                     if(xVel>9||zVel>9) {
                         player.kick(Component.text(ChatColor.GREEN+"Detected Vehicle Speed. Speed limit in boats off ice is 9 blocks per second."));
                         Bukkit.broadcast(Component.text(ChatColor.GREEN+player.getName()+" was kicked for speeding in a vehicle."));
