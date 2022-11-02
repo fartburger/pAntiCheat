@@ -57,7 +57,7 @@ public class PlayerMoveListener implements Listener {
         timenotgliding = player.isGliding() ? 0 : clamp(0,70,timenotgliding+1);
         timenotjumping = (yVel!=0) ? 0 : clamp(0,7,timenotjumping+1);
         officetime = onIce(player.getWorld(),player.getLocation()) ? 0 : clamp(0,70,officetime+1);
-
+        entervehicledelay = player.isInsideVehicle() ? 0 : clamp(0,10,entervehicledelay+1);
         if(player.getGameMode()==GameMode.SURVIVAL&&!player.isOp()) {
             if((player.getActivePotionEffects().size()==0||player.getActivePotionEffects()==null)&&
                     !onIce(player.getWorld(),player.getLocation())&&!player.isInsideVehicle()&&!inAir(player.getWorld(),player.getLocation())
@@ -69,7 +69,6 @@ public class PlayerMoveListener implements Listener {
             }
 
             if(player.isInsideVehicle()) {
-                entervehicledelay = entervehicledelay<10 ? clamp(0,10,entervehicledelay+1) : 10;
                 if(entervehicledelay>=10) {
                     if (!onIce(player.getWorld(), player.getLocation()) && officetime >= 70) {
                         if (xVel > 9 || zVel > 9) {
