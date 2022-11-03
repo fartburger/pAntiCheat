@@ -8,6 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.util.VoxelShape;
 
 import java.util.Arrays;
 import java.util.List;
@@ -49,6 +50,9 @@ public class AntiNoFall implements Listener {
                 if (!inAir(player.getWorld(), player.getLocation(), yVel)) {
                     falldamage = (fallenblocks > 3 ? fallenblocks - 3 : 0);
                     if (fallcancellers.contains(player.getWorld().getBlockAt(player.getLocation()).getType())) {
+                        return;
+                    }
+                    if(player.getWorld().getBlockAt(player.getLocation()).isLiquid()) {
                         return;
                     }
                     switch (player.getWorld().getBlockAt(player.getLocation().getBlockX(), player.getLocation().getBlockY() - 1, player.getLocation().getBlockZ()).getType()) {

@@ -4,6 +4,8 @@ import com.google.common.util.concurrent.Service;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -80,6 +82,19 @@ public class PlayerMoveListener implements Listener {
             if((player.getActivePotionEffects().size()==0||player.getActivePotionEffects()==null)&&
                     !onIce(player.getWorld(),player.getLocation())&&!player.isInsideVehicle()&&!inAir(player.getWorld(),player.getLocation())
                     &&timenotgliding>=70&&timenotjumping>=8) {
+                if(player.getInventory().getBoots()!=null) {
+                    if(player.getInventory().getBoots().containsEnchantment(Enchantment.SOUL_SPEED) &&
+                            (player.getWorld().getBlockAt(player.getLocation().getBlockX(),player.getLocation().getBlockY()-1,
+                            player.getLocation().getBlockZ()).getType()==Material.SOUL_SOIL||player.getWorld().getBlockAt(player.getLocation().getBlockX(),player.getLocation().getBlockY()-1,
+                                    player.getLocation().getBlockZ()).getType()==Material.SOUL_SAND)) {
+                        double maxspeed = 7*(player.getInventory().getBoots().getEnchantmentLevel(Enchantment.SOUL_SPEED)*
+                                1.05)+1.3;
+                        if(xVel>maxspeed||zVel>maxspeed) {
+                            player.kick(Component.text(ChatColor.GREEN + "Detected Speed. blah blah blah too fast for soul speed boots"));
+                            Bukkit.broadcast(Component.text(ChatColor.GREEN+player.getName()+" was kicked for speeding."));
+                        }
+                    }
+                }
                 if (xVel > 7 || zVel > 7 && yVel == 0) {
                     player.kick(Component.text(ChatColor.GREEN + "Detected Speed. Speed limit on foot is 7 blocks per second."));
                     Bukkit.broadcast(Component.text(ChatColor.GREEN+player.getName()+" was kicked for speeding."));
@@ -89,16 +104,31 @@ public class PlayerMoveListener implements Listener {
             if(player.isInsideVehicle()) {
                 if(entervehicledelay>=10) {
                     if (!onIce(player.getWorld(), player.getLocation()) && officetime >= 70) {
-                        if (xVel > 9 || zVel > 9) {
-                            player.kick(Component.text(ChatColor.GREEN + "Detected Vehicle Speed. Speed limit in boats off ice is 9 blocks per second."));
-                            Bukkit.broadcast(Component.text(ChatColor.GREEN + player.getName() + " was kicked for speeding in a vehicle."));
-                            officetime = 0;
+                        if(player.getVehicle().equals(EntityType.HORSE)) {
+                            if(xVel>15||zVel>15) {
+                                player.kick(Component.text(ChatColor.GREEN + "Detected Entity Speed. Speed limit on horses is 15 blocks per second."));
+                                Bukkit.broadcast(Component.text(ChatColor.GREEN + player.getName() + " was kicked for speeding on a horse."));
+                            }
                         }
-                    } else {
-                        if (xVel > 40 || zVel > 40) {
-                            player.kick(Component.text(ChatColor.GREEN + "Detected Vehicle Speed. Speed limit in boats on ice is 40 blocks per second."));
-                            Bukkit.broadcast(Component.text(ChatColor.GREEN + player.getName() + " was kicked for speeding in a vehicle."));
+                        if(player.getVehicle().equals(EntityType.BOAT)||player.getVehicle().equals(EntityType.CHEST_BOAT)) {
+                            if (xVel > 9 || zVel > 9) {
+                                player.kick(Component.text(ChatColor.GREEN + "Detected Vehicle Speed. Speed limit in boats off ice is 9 blocks per second."));
+                                Bukkit.broadcast(Component.text(ChatColor.GREEN + player.getName() + " was kicked for speeding in a boat."));
+                                officetime = 0;
+                            } else {
+                                if (xVel > 40 || zVel > 40) {
+                                    player.kick(Component.text(ChatColor.GREEN + "Detected Vehicle Speed. Speed limit in boats on ice is 40 blocks per second."));
+                                    Bukkit.broadcast(Component.text(ChatColor.GREEN + player.getName() + " was kicked for speeding in a boat."));
+                                }
+                            }
                         }
+                        if(player.getVehicle().equals(EntityType.PIG)) {
+                            if(xVel>6||zVel>6) {
+                                player.kick(Component.text(ChatColor.GREEN + "Detected Entity Speed. Speed limit on pigs is 40 blocks per second."));
+                                Bukkit.broadcast(Component.text(ChatColor.GREEN + player.getName() + " was kicked for speeding on a pig"));
+                            }
+                        }
+
                     }
                 }
             } else {
