@@ -140,7 +140,8 @@ public class PlayerMoveListener implements Listener {
 
             for(int x=-1;x<=1;x++) {
                 for(int z=-1;z<=1;z++) {
-                    if(w.getBlockAt(l.getBlockX()+x,l.getBlockY()-1,l.getBlockZ()+z).getType()!=Material.AIR) {
+                    if(w.getBlockAt(l.getBlockX()+x,l.getBlockY()-1,l.getBlockZ()+z).getType()!=Material.AIR||
+                    w.getBlockAt(l.getBlockX()+x,l.getBlockY(),l.getBlockZ()+z).getType()!=Material.AIR) {
                         return false;
                     }
                 }
