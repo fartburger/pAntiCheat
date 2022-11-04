@@ -73,7 +73,7 @@ public class AntiNoFall implements Listener {
                     //player.sendMessage("Fall damage you should receive: "+ChatColor.GREEN+"["+falldamage+"]");
                     expectedplyhealth = player.getHealth() - falldamage;
                     if (player.getHealth() > expectedplyhealth) {
-                        player.damage(falldamage);
+                        //player.damage(falldamage);
                     }
                     //waitforcheck=true;
                     fallenblocks = 0;
@@ -89,7 +89,7 @@ public class AntiNoFall implements Listener {
     }
 
     public boolean inAir(World w, Location l,double yvel) {
-        if(Math.abs(yvel)<0.4) {
+        if(Math.abs(yvel)>0.4) {
             for (int x = -1; x <= 1; x++) {
                 for (int z = -1; z <= 1; z++) {
                     if (w.getBlockAt(l.getBlockX() + x, l.getBlockY() - 1, l.getBlockZ() + z).getType() != Material.AIR) {
