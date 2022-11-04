@@ -89,16 +89,17 @@ public class AntiNoFall implements Listener {
     }
 
     public boolean inAir(World w, Location l,double yvel) {
-        if(Math.abs(yvel)>0.4) {
+        for (int y=0;y>=-1;y--) {
             for (int x = -1; x <= 1; x++) {
                 for (int z = -1; z <= 1; z++) {
-                    if (w.getBlockAt(l.getBlockX() + x, l.getBlockY() - 1, l.getBlockZ() + z).getType() != Material.AIR) {
+                    if (w.getBlockAt(l.getBlockX() + x, l.getBlockY() +y, l.getBlockZ() + z).getType() != Material.AIR) {
                         return false;
                     }
                 }
             }
         }
-        if(w.getBlockAt(l.getBlockX(),l.getBlockY()-1,l.getBlockZ()).getType()==Material.AIR) {
+        if(w.getBlockAt(l.getBlockX(),l.getBlockY()-1,l.getBlockZ()).getType()==Material.AIR&&
+        w.getBlockAt(l).getType()==Material.AIR) {
             return true;
         } else {
             return false;

@@ -16,6 +16,7 @@ public class HelloCommand implements CommandExecutor {
         if(sender instanceof Player) {
             sender.sendMessage(Component.text(ChatColor.GREEN+"hi"));
             Bukkit.getLogger().info(sender.getName()+" says hello.");
+
         }
         return true;
     }
