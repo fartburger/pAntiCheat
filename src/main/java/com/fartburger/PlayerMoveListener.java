@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import static org.bukkit.Bukkit.getLogger;
 import static org.bukkit.Bukkit.getServer;
 
 public class PlayerMoveListener implements Listener {
@@ -66,8 +67,13 @@ public class PlayerMoveListener implements Listener {
                     Math.abs(e.getTo().getX()-e.getFrom().getX())!=0&&Math.abs(e.getTo().getZ()-e.getFrom().getZ())!=0) ? clamp(0,40,botmotionticks+1) : 0;
 
             if(botmotionticks>=30) {
-                player.kick(Component.text(ChatColor.GREEN+"Detected Baritone."));
-                Bukkit.broadcast(Component.text(ChatColor.GREEN+player.getName()+" was kicked for using baritone."));
+                Bukkit.getServer().getOnlinePlayers().forEach(ply -> {
+                    if(ply.isOp()) {
+                        ply.sendMessage(Component.text(ChatColor.GREEN+player.getName()+" triggered baritone detection at ["+player.getLocation().getBlockX()+
+                                ","+player.getLocation().getBlockY()+","+player.getLocation().getBlockZ()));
+                        getLogger().info(player.getName()+" triggered baritone detection.");
+                    }
+                });
                 botmotionticks=0;
             }
         }
