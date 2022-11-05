@@ -6,6 +6,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.VoxelShape;
@@ -13,6 +14,7 @@ import org.bukkit.util.VoxelShape;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.bukkit.Bukkit.broadcast;
 import static org.bukkit.Bukkit.getServer;
 
 
@@ -49,15 +51,30 @@ public class AntiNoFall implements Listener {
             if (e.getFrom().getX() != e.getTo().getX() || e.getFrom().getY() != e.getTo().getY() || e.getFrom().getZ() != e.getTo().getZ()) {
                 if (!inAir(player.getWorld(), player.getLocation(), yVel)) {
                     falldamage = (fallenblocks > 3 ? fallenblocks - 3 : 0);
+
                     if (fallcancellers.contains(player.getWorld().getBlockAt(player.getLocation()).getType())) {
+                        fallenblocks=0;
                         return;
                     }
                     if(player.getWorld().getBlockAt(player.getLocation()).isLiquid()) {
+                        fallenblocks=0;
                         return;
                     }
+                    if(fallcancellers.contains(player.getWorld().getBlockAt(player.getLocation().getBlockX(),player.getLocation().getBlockY()-1,player.getLocation().getBlockZ()).getType()))  {
+                        fallenblocks=0;
+                        return;
+                    }
+                    if(yVel>=-0.0784000015258789)  {
+                        fallenblocks=0;
+                        return;
+                    }
+
                     switch (player.getWorld().getBlockAt(player.getLocation().getBlockX(), player.getLocation().getBlockY() - 1, player.getLocation().getBlockZ()).getType()) {
                         case SLIME_BLOCK -> {
-                            if (!player.isSneaking()) return;
+                            if (!player.isSneaking())  {
+                                fallenblocks=0;
+                                return;
+                            }
                         }
                         case HONEY_BLOCK, HAY_BLOCK -> falldamage -= (int) (falldamage * (20 / 100.0f));
                         case BLACK_BED, BLUE_BED, BROWN_BED, CYAN_BED, LIGHT_BLUE_BED, LIGHT_GRAY_BED,
@@ -73,7 +90,10 @@ public class AntiNoFall implements Listener {
                     //player.sendMessage("Fall damage you should receive: "+ChatColor.GREEN+"["+falldamage+"]");
                     expectedplyhealth = player.getHealth() - falldamage;
                     if (player.getHealth() > expectedplyhealth) {
-                        //player.damage(falldamage);
+                        player.damage(falldamage);
+                        if(expectedplyhealth<=0) {
+                            broadcast(Component.text(ChatColor.GREEN+player.getName()+" died from fall damage they tried to negate with nofall."));
+                        }
                     }
                     //waitforcheck=true;
                     fallenblocks = 0;
@@ -89,17 +109,8 @@ public class AntiNoFall implements Listener {
     }
 
     public boolean inAir(World w, Location l,double yvel) {
-        for (int y=0;y>=-1;y--) {
-            for (int x = -1; x <= 1; x++) {
-                for (int z = -1; z <= 1; z++) {
-                    if (w.getBlockAt(l.getBlockX() + x, l.getBlockY() +y, l.getBlockZ() + z).getType() != Material.AIR) {
-                        return false;
-                    }
-                }
-            }
-        }
-        if(w.getBlockAt(l.getBlockX(),l.getBlockY()-1,l.getBlockZ()).getType()==Material.AIR&&
-        w.getBlockAt(l).getType()==Material.AIR) {
+
+        if(w.getBlockAt(l.getBlockX(),l.getBlockY()-1,l.getBlockZ()).getType()==Material.AIR&&yvel<=-0.04) {
             return true;
         } else {
             return false;
