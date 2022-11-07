@@ -1,4 +1,4 @@
-name: gAntiCheat
+name: pAntiCheat
 version: '${version}'
 main: com.fartburger.main
 api-version: 1.19

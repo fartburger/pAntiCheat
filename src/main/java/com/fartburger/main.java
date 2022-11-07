@@ -10,9 +10,8 @@ public final class main extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerMoveListener(),this);
         getServer().getPluginManager().registerEvents(new PlayerMineListener(),this);
         getServer().getPluginManager().registerEvents(new AntiNoFall(),this);
+        getServer().getPluginManager().registerEvents(new PlayerDeathListener(),this);
         this.getCommand("hello").setExecutor(new HelloCommand());
-
-
     }
 
     @Override
