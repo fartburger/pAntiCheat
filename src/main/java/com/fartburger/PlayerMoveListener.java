@@ -101,7 +101,7 @@ public class PlayerMoveListener implements Listener {
                         }
                     }
                 }
-                if (xVel > 7 || zVel > 7 && yVel == 0) {
+                if (xVel > 13 || zVel > 13 && yVel == 0) {
                     player.kick(Component.text(ChatColor.GREEN + "Detected Speed. Speed limit on foot is 7 blocks per second."));
                     Bukkit.broadcast(Component.text(ChatColor.GREEN+player.getName()+" was kicked for speeding."));
                 }
