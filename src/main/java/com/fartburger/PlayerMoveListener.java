@@ -69,9 +69,11 @@ public class PlayerMoveListener implements Listener {
             if(botmotionticks>=30) {
                 Bukkit.getServer().getOnlinePlayers().forEach(ply -> {
                     if(ply.isOp()) {
+                        /*
                         ply.sendMessage(Component.text(ChatColor.GREEN+player.getName()+" triggered baritone detection at ["+player.getLocation().getBlockX()+
                                 ","+player.getLocation().getBlockY()+","+player.getLocation().getBlockZ()));
                         getLogger().info(player.getName()+" triggered baritone detection.");
+                         */
                     }
                 });
                 botmotionticks=0;
