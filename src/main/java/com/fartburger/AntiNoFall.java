@@ -89,7 +89,7 @@ public class AntiNoFall implements Listener {
 
                     //player.sendMessage("Fall damage you should receive: "+ChatColor.GREEN+"["+falldamage+"]");
                     expectedplyhealth = player.getHealth() - falldamage;
-                    if (player.getHealth() > expectedplyhealth) {
+                    if (player.getHealth() > expectedplyhealth && !player.isInsideVehicle()) {
                         player.damage(falldamage);
                         if(expectedplyhealth<=0) {
                             broadcast(Component.text(ChatColor.GREEN+player.getName()+" died from fall damage they tried to negate with nofall."));
